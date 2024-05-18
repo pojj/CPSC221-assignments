@@ -47,7 +47,7 @@ void Block::Build(unsigned int w, unsigned int h, unsigned int upper, unsigned i
  */
 void Block::Render(unsigned int scale, unsigned int upper, unsigned int left, PNG& targetimg) const {
     unsigned m = pixels.size();
-    unsigned n = pixels.size();
+    unsigned n = pixels[0].size();
 
     if (scale == 0) {
         for (unsigned i = 0; i < m; i += 2) {
@@ -101,8 +101,14 @@ void Block::Render(unsigned int scale, unsigned int upper, unsigned int left, PN
  *  @post pixel data in this Block has been mirrored horizontally
  */
 void Block::FlipHorizontal() {
-    // COMPLETE YOUR IMPLEMENTATION BELOW
-	
+    unsigned m = pixels.size();
+    unsigned n = pixels[0].size();
+
+	for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n/2; j++) {
+            swap(pixels[i][j],pixels[i][n-j-1]);
+        }
+    }
 }
 
 /**
@@ -111,8 +117,7 @@ void Block::FlipHorizontal() {
  *  @return rectangular Block's width
  */
 unsigned int Block::GetWidth() const {
-    // REPLACE THE LINE BELOW WITH YOUR IMPLEMENTATION
-    return 0;
+    return pixels[0].size();
 }
 
 /**
@@ -121,6 +126,5 @@ unsigned int Block::GetWidth() const {
  *  @return rectangular Block's height
  */
 unsigned int Block::GetHeight() const {
-    // REPLACE THE LINE BELOW WITH YOUR IMPLEMENTATION
-    return 0;
+    return pixels.size();
 }
