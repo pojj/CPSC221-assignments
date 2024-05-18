@@ -24,8 +24,14 @@
  *  @post pixels contains sourceimg's pixel data starting from (left, upper)
  */
 void Block::Build(unsigned int w, unsigned int h, unsigned int upper, unsigned int left, const PNG& sourceimg) {
-    // COMPLETE YOUR IMPLEMENTATION BELOW
-	
+    pixels.resize(h);
+    for (unsigned i = 0; i < h; i++) {
+        pixels[i].resize(w);
+        for (unsigned j = 0; j < w; j++) {
+            RGBAPixel* p = sourceimg.getPixel(left+j,upper+i);
+            pixels[i][j] = *p;
+        }
+    }
 }
 
 /**
