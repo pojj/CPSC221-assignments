@@ -46,15 +46,6 @@ void TwoDLinkedList::Clear() {
 void TwoDLinkedList::Copy(const TwoDLinkedList& otherlist) {
     PNG img = otherlist.Render(1);
     Build(img, otherlist.GetBlockDimensionX(), otherlist.GetBlockDimensionY());
-
-    
-    
-    /*northwest = new TwoDNode();
-    TwoDNode* otherNode = otherlist.northwest;
-    TwoDNode *thisNode = northwest;*/
-
-    //!!! finish
-
 }
 
 /**
@@ -205,23 +196,27 @@ PNG TwoDLinkedList::Render(unsigned int scale) const {
     width *= (scale == 0) ? 0.5 : scale;
     height *= (scale == 0) ? 0.5 : scale;
 
-    PNG img = PNG(width, height);
+    PNG img = PNG(width * GetBlockDimensionX(), height * GetBlockDimensionY());
 
     TwoDNode *current = northwest;
     TwoDNode *node = current;
 
+    int upper = 0;
+    int left = 0;
 
     while (current != nullptr)
     {
-       
+        
         while (node != nullptr)
         {
-            
+            node->data.Render(scale, upper*height, left*width, img);
+            left++;
         }
-    }
 
+        left = 0;
+        upper++;
+    }
     return img;
-    // still working
 }
 
 /**
@@ -257,7 +252,6 @@ void TwoDLinkedList::FlipHorizontal() {
     TwoDNode *current = northwest;
     TwoDNode *node = current;
     TwoDNode *previousWest = nullptr; 
-    //!!! forgot to add southeast and northwest
 
     while(current != nullptr) {
         node = current;
