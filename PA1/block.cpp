@@ -104,8 +104,8 @@ void Block::FlipHorizontal() {
     unsigned m = pixels.size();
     unsigned n = pixels[0].size();
 
-	for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n/2; j++) {
+	for (unsigned i = 0; i < m; i++) {
+        for (unsigned j = 0; j < n/2; j++) {
             swap(pixels[i][j],pixels[i][n-j-1]);
         }
     }
