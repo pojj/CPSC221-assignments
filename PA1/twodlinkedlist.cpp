@@ -1,6 +1,6 @@
 /**
  * @file twodlinkedlist.cpp
- * @author your name(s)
+ * @author Carina Gu William Song
  *
  * Defines a two-dimensional null-terminated doubly-linked list containing rectangular image pieces
  *  for CPSC 221 PA1
@@ -16,6 +16,24 @@
  *  @post this list is empty
  */
 void TwoDLinkedList::Clear() {
+    TwoDNode *temp = nullptr;
+
+    TwoDNode *current = northwest;
+    TwoDNode *node = current;
+
+    while (current != nullptr)
+    {
+        node = current;
+        current = current->south;
+
+        while (node != nullptr)
+        {
+            temp = node->east;
+            delete node;
+            node = temp;
+        }
+    }
+
     // COMPLETE YOUR IMPLEMENTATION BELOW
 	
 }
@@ -26,16 +44,25 @@ void TwoDLinkedList::Clear() {
  *  @post this list is a physically separate copy of otherlist
  */
 void TwoDLinkedList::Copy(const TwoDLinkedList& otherlist) {
-    // COMPLETE YOUR IMPLEMENTATION BELOW
-	
+    PNG img = otherlist.Render(1);
+    Build(img, otherlist.GetBlockDimensionX(), otherlist.GetBlockDimensionY());
+
+    
+    
+    /*northwest = new TwoDNode();
+    TwoDNode* otherNode = otherlist.northwest;
+    TwoDNode *thisNode = northwest;*/
+
+    //!!! finish
+
 }
 
 /**
  *  Default constructor creates an empty list
  */
 TwoDLinkedList::TwoDLinkedList() {
-    // COMPLETE YOUR IMPLEMENTATION BELOW
-	
+    northwest = nullptr;
+    southeast = nullptr;
 }
 
 /**
@@ -68,23 +95,102 @@ TwoDLinkedList::TwoDLinkedList() {
  */
 void TwoDLinkedList::Build(PNG& img, unsigned int blockdimx, unsigned int blockdimy) {
     // COMPLETE YOUR IMPLEMENTATION BELOW
-	
+    //Split img horizontaly
+
+    unsigned int blockSizey = img.height() / blockdimy;
+    unsigned int blockSizex = img.width() / blockdimx;
+
+    unsigned int top = 0;
+    TwoDNode *firstList = nullptr;
+    TwoDNode *secondList = nullptr;
+    TwoDNode *end = nullptr;
+
+    northwest = HorizontalList(img, blockSizex, blockSizey, top);
+    firstList = northwest;
+
+    top += blockSizey;
+
+    while(top <= img.height() - blockSizey) {
+        secondList = HorizontalList(img, blockSizex, blockSizey, top);
+        top += blockSizey;
+
+        end = Combine(firstList, secondList);
+        firstList = secondList;
+        secondList = nullptr;
+    }
+
+    southeast = end;
+    
+}
+
+// Returns a horizontalList
+TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockSizex, unsigned int blockSizey, unsigned int topPixle){
+    unsigned int x = 0;
+    Block block;
+    TwoDNode *head = new TwoDNode();
+    TwoDNode *current = head;
+    TwoDNode *previous = nullptr;
+
+    while ( x <= img.width() - blockSizex) {
+        block.Build(blockSizex, blockSizey, topPixle, x, img);
+        current->data = block;
+
+        if (previous != nullptr) {
+            previous->east = current;
+            current->west = previous;
+        }
+
+        previous = current;
+        current = new TwoDNode();
+        x += blockSizex;
+    }
+    //current = nullptr;
+    //previous = nullptr;
+    return head;
+}
+
+// Combines two Lists of TwoDNodes into one single list and returns the end node address of the list stacked on the bottom
+TwoDNode *TwoDLinkedList::Combine(TwoDNode* firstHead, TwoDNode * secondHead)
+{
+    TwoDNode *top = firstHead;
+    TwoDNode *bottom = secondHead;
+    while (top != nullptr && bottom != nullptr) {
+        top->south = bottom;
+        bottom->north = top;
+        top = top->east;
+        bottom = bottom->east;
+    }
+    return bottom;
 }
 
 /**
  *  Returns the horizontal dimension of this list (in blocks)
  */
-unsigned int TwoDLinkedList::GetBlockDimensionX() const {
+unsigned int
+TwoDLinkedList::GetBlockDimensionX() const
+{
+    int count = 0;
+    TwoDNode *current = northwest;
     // REPLACE THE LINE BELOW WITH YOUR IMPLEMENTATION
-    return 0;
+    while (current != nullptr) {
+        count++;
+        current = current->east;
+    }
+    return count;
 }
 
 /**
  *  Returns the vertical dimension of this list (in blocks)
  */
 unsigned int TwoDLinkedList::GetBlockDimensionY() const {
-    // REPLACE THE LINE BELOW WITH YOUR IMPLEMENTATION
-    return 0;
+    int count = 0;
+    TwoDNode *current = northwest;
+    while (current != nullptr)
+    {
+        count++;
+        current = current->south;
+    }
+    return count;
 }
 
 /**
@@ -92,8 +198,30 @@ unsigned int TwoDLinkedList::GetBlockDimensionY() const {
  *  @param scale - integer multiplier for dimensions. 0 = scale by 0.5.
  */
 PNG TwoDLinkedList::Render(unsigned int scale) const {
-    // REPLACE THE LINE BELOW WITH YOUR IMPLEMENTATION
-    return PNG();
+    int width = northwest->data.GetWidth();
+    int height = northwest->data.GetHeight();
+
+    //scales width height:
+    width *= (scale == 0) ? 0.5 : scale;
+    height *= (scale == 0) ? 0.5 : scale;
+
+    PNG img = PNG(width, height);
+
+    TwoDNode *current = northwest;
+    TwoDNode *node = current;
+
+
+    while (current != nullptr)
+    {
+       
+        while (node != nullptr)
+        {
+            
+        }
+    }
+
+    return img;
+    // still working
 }
 
 /**
@@ -126,6 +254,31 @@ PNG TwoDLinkedList::Render(unsigned int scale) const {
  */
 void TwoDLinkedList::FlipHorizontal() {
     // COMPLETE YOUR IMPLEMENTATION BELOW
-	
+    TwoDNode *current = northwest;
+    TwoDNode *node = current;
+    TwoDNode *previousWest = nullptr; 
+    //!!! forgot to add southeast and northwest
+
+    while(current != nullptr) {
+        node = current;
+        current = current->south;
+        while (node != nullptr) {
+            node->data.FlipHorizontal();
+            previousWest = node->west;
+            node->west = node->east;
+
+            if (node->north == nullptr && node->west == nullptr){
+                northwest = node;
+            }
+
+            if (node->east == nullptr && node->south == nullptr) {
+                southeast = node;
+            }
+
+            node = node->west;
+        }
+
+    }
+
 }
 
