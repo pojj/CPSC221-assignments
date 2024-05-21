@@ -62,7 +62,7 @@ void Block::Render(unsigned int scale, unsigned int upper, unsigned int left, PN
                 unsigned b = (tl.b + tr.b + bl.b + br.b)/4;
                 double a = (tl.a + tr.a + bl.a + br.a)/4;
 
-                RGBAPixel* p = targetimg.getPixel(left+j/2,  upper+i/2);
+                RGBAPixel* p = targetimg.getPixel(left+j/2, upper+i/2);
                 
                 p->r = r;
                 p->g = g;
@@ -82,7 +82,7 @@ void Block::Render(unsigned int scale, unsigned int upper, unsigned int left, PN
 
             for (unsigned k = 0; k < scale; k++) {
                 for (unsigned l = 0; l < scale; l++) {
-                    RGBAPixel* p = targetimg.getPixel(j*scale+l, i*scale+k);
+                    RGBAPixel* p = targetimg.getPixel(left+j*scale+l, upper+i*scale+k);
 
                     p->r = r;
                     p->g = g;
