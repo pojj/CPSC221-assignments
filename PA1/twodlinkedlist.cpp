@@ -33,7 +33,6 @@ void TwoDLinkedList::Clear() {
             node = temp;
         }
     }
-
     // COMPLETE YOUR IMPLEMENTATION BELOW
 	
 }
@@ -107,6 +106,7 @@ void TwoDLinkedList::Build(PNG& img, unsigned int blockdimx, unsigned int blockd
 
         end = Combine(firstList, secondList);
         firstList = secondList;
+
         secondList = nullptr;
     }
 
@@ -114,7 +114,7 @@ void TwoDLinkedList::Build(PNG& img, unsigned int blockdimx, unsigned int blockd
     
 }
 
-// Returns a horizontalList
+// Returns the pointer of the start of a horizontalList of one row
 TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockSizex, unsigned int blockSizey, unsigned int topPixle){
     unsigned int x = 0;
     Block block;
@@ -135,23 +135,30 @@ TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockSizex, unsi
         current = new TwoDNode();
         x += blockSizex;
     }
-    //current = nullptr;
-    //previous = nullptr;
     return head;
 }
 
-// Combines two Lists of TwoDNodes into one single list and returns the end node address of the list stacked on the bottom
+// Combines two Lists of TwoDNodes into one single list and returns the node at the bottom right corner of the list stacked on the bottom
+
 TwoDNode *TwoDLinkedList::Combine(TwoDNode* firstHead, TwoDNode * secondHead)
 {
     TwoDNode *top = firstHead;
     TwoDNode *bottom = secondHead;
-    while (top != nullptr && bottom != nullptr) {
+    while (top != nullptr /*very unnecessary but it's just there*/ && bottom != nullptr)
+    {
         top->south = bottom;
         bottom->north = top;
+
         top = top->east;
+
+        if (top == nullptr) {
+            return bottom;
+        }
+
         bottom = bottom->east;
     }
-    return bottom;
+
+    return nullptr;
 }
 
 /**
@@ -201,8 +208,8 @@ PNG TwoDLinkedList::Render(unsigned int scale) const {
     TwoDNode *current = northwest;
     TwoDNode *node = current;
 
-    int upper = 0;
-    int left = 0;
+    unsigned int upper = 0;
+    unsigned int left = 0;
 
     while (current != nullptr)
     {
