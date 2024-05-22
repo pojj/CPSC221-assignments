@@ -125,7 +125,7 @@ TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockdimx, unsig
     while (x < blockdimx)
     {
         Block block;
-        block.Build(blockSizex, blockSizey, topPixle, x*blockSizey, img); 
+        block.Build(blockSizex, blockSizey, topPixle, x*blockSizex, img); 
         current->data = block;
 
         if (previous != nullptr) {
@@ -263,15 +263,20 @@ void TwoDLinkedList::FlipHorizontal() {
     // COMPLETE YOUR IMPLEMENTATION BELOW
     TwoDNode *current = northwest;
     TwoDNode *node = current;
-    TwoDNode *previousWest = nullptr; 
+    TwoDNode *previousWest = nullptr;
+    //TwoDNode *next = nullptr;
 
     while(current != nullptr) {
         node = current;
-        current = current->south;
+        //current = current->south; moved to bottom
+
         while (node != nullptr) {
             node->data.FlipHorizontal();
+
             previousWest = node->west;
+
             node->west = node->east;
+            node->east = previousWest;
 
             if (node->north == nullptr && node->west == nullptr){
                 northwest = node;
@@ -283,7 +288,7 @@ void TwoDLinkedList::FlipHorizontal() {
 
             node = node->west;
         }
-
+        current = current->south;
     }
 
 }
