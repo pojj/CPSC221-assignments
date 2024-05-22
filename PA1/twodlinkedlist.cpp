@@ -85,7 +85,6 @@ TwoDLinkedList::TwoDLinkedList() {
  */
 void TwoDLinkedList::Build(PNG& img, unsigned int blockdimx, unsigned int blockdimy) {
     // COMPLETE YOUR IMPLEMENTATION BELOW
-    //Split img horizontaly
 
     unsigned int blockSizey = img.height() / blockdimy;
     unsigned int blockSizex = img.width() / blockdimx;
@@ -125,7 +124,8 @@ TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockdimx, unsig
 
     while (x < blockdimx)
     {
-        block.Build(blockSizex, blockSizey, topPixle, x*blockSizey, img); // change
+        Block block;
+        block.Build(blockSizex, blockSizey, topPixle, x*blockSizey, img); 
         current->data = block;
 
         if (previous != nullptr) {
@@ -147,7 +147,7 @@ TwoDNode *TwoDLinkedList::Combine(TwoDNode* firstHead, TwoDNode * secondHead)
 {
     TwoDNode *top = firstHead;
     TwoDNode *bottom = secondHead;
-    while (top != nullptr /*very unnecessary but it's just there*/ && bottom != nullptr)
+    while (top != nullptr /*very unnecessary but it's just there*/ || bottom != nullptr)
     {
         top->south = bottom;
         bottom->north = top;
@@ -209,19 +209,21 @@ PNG TwoDLinkedList::Render(unsigned int scale) const {
     PNG img = PNG(width * GetBlockDimensionX(), height * GetBlockDimensionY());
 
     TwoDNode *current = northwest;
-    TwoDNode *node = current;
+    TwoDNode *node = nullptr;
 
     unsigned int upper = 0;
     unsigned int left = 0;
 
     while (current != nullptr)
     {
-        
+        node = current;
         while (node != nullptr)
         {
             node->data.Render(scale, upper*height, left*width, img);
+            node = node->east;
             left++;
         }
+        current = current->south;
 
         left = 0;
         upper++;

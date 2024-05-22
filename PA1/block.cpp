@@ -25,14 +25,15 @@
  */
 void Block::Build(unsigned int w, unsigned int h, unsigned int upper, unsigned int left, const PNG& sourceimg) {
     std::cout << "building a block from upper:" << upper << " left: " << left << " of width: " << w << "hight: " << h << endl;
-    /*pixels.resize(h);
+    
+    pixels.resize(h);
     for (unsigned i = 0; i < h; i++) {
         pixels[i].resize(w);
         for (unsigned j = 0; j < w; j++) {
             RGBAPixel* p = sourceimg.getPixel(left+j,upper+i);
             pixels[i][j] = *p;
         }
-    }*/
+    }
 }
 
 /**
@@ -47,6 +48,7 @@ void Block::Build(unsigned int w, unsigned int h, unsigned int upper, unsigned i
  *                 For 1 and larger scale, scale each pixel using the original color with no blending.
  */
 void Block::Render(unsigned int scale, unsigned int upper, unsigned int left, PNG& targetimg) const {
+    cout << "rendering an image of scale: " << scale << "starting from uper " << upper << " left: " << left << endl;
     unsigned m = pixels.size();
     unsigned n = pixels[0].size();
 
