@@ -138,6 +138,7 @@ TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockdimx, unsig
 
         x++;
     }
+    delete current;
     return head;
 }
 
