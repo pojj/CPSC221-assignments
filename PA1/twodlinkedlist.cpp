@@ -95,19 +95,19 @@ void TwoDLinkedList::Build(PNG& img, unsigned int blockdimx, unsigned int blockd
     TwoDNode *secondList = nullptr;
     TwoDNode *end = nullptr;
 
-    northwest = HorizontalList(img, blockSizex, blockSizey, top);
+    northwest = HorizontalList(img, blockdimx, blockSizex, blockSizey, top);
     firstList = northwest;
 
-    top += blockSizey;
+    top = 1;
 
-    while(top <= img.height() - blockSizey) {
-        secondList = HorizontalList(img, blockSizex, blockSizey, top);
-        top += blockSizey;
+    while(top < blockdimy) {
+        secondList = HorizontalList(img, blockdimx, blockSizex, blockSizey, top * blockSizey);
 
         end = Combine(firstList, secondList);
         firstList = secondList;
 
         secondList = nullptr;
+        top++;
     }
 
     southeast = end;
@@ -115,15 +115,17 @@ void TwoDLinkedList::Build(PNG& img, unsigned int blockdimx, unsigned int blockd
 }
 
 // Returns the pointer of the start of a horizontalList of one row
-TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockSizex, unsigned int blockSizey, unsigned int topPixle){
-    unsigned int x = 0;
+TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockdimx, unsigned int blockSizex, unsigned int blockSizey, unsigned int topPixle)
+{
     Block block;
     TwoDNode *head = new TwoDNode();
     TwoDNode *current = head;
     TwoDNode *previous = nullptr;
+    unsigned int x = 0;
 
-    while ( x <= img.width() - blockSizex) {
-        block.Build(blockSizex, blockSizey, topPixle, x, img);
+    while (x < blockdimx)
+    {
+        block.Build(blockSizex, blockSizey, topPixle, x*blockSizex, img);
         current->data = block;
 
         if (previous != nullptr) {
@@ -133,7 +135,8 @@ TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockSizex, unsi
 
         previous = current;
         current = new TwoDNode();
-        x += blockSizex;
+
+        x++;
     }
     return head;
 }
@@ -196,12 +199,12 @@ unsigned int TwoDLinkedList::GetBlockDimensionY() const {
  *  @param scale - integer multiplier for dimensions. 0 = scale by 0.5.
  */
 PNG TwoDLinkedList::Render(unsigned int scale) const {
-    int width = northwest->data.GetWidth();
-    int height = northwest->data.GetHeight();
+    unsigned int width = northwest->data.GetWidth();
+    unsigned int height = northwest->data.GetHeight();
 
     //scales width height:
-    width *= (scale == 0) ? 0.5 : scale;
-    height *= (scale == 0) ? 0.5 : scale;
+    width = (scale == 0) ? width/2 : scale * width;
+    height = (scale == 0) ? height/2 : scale * height;
 
     PNG img = PNG(width * GetBlockDimensionX(), height * GetBlockDimensionY());
 
