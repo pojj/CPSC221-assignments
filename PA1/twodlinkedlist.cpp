@@ -125,7 +125,7 @@ TwoDNode *TwoDLinkedList::HorizontalList(PNG &img, unsigned int blockdimx, unsig
 
     while (x < blockdimx)
     {
-        block.Build(blockSizex, blockSizey, topPixle, x*blockSizex, img);
+        block.Build(blockSizex, blockSizey, topPixle, x*blockSizey, img); // change
         current->data = block;
 
         if (previous != nullptr) {
