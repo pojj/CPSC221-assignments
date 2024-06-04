@@ -1,0 +1,5 @@
+maze
+.objs
+*.png
+!soln_images/
+!soln_images/*.png
