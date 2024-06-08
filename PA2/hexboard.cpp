@@ -75,7 +75,15 @@ void HexBoard::link(const pair<int, int>& coord1, const pair<int, int>& coord2) 
  * @return The cell distance (ignoring walls) between coord1 and coord2.
  */
 int HexBoard::distance(const pair<int, int>& coord1, const pair<int, int>& coord2) const {
-    // work in progess
+    int q1 = coord1.first;
+    int r1 = coord1.second;
+    int s1 = -q1 - r1;
+
+    int q2 = coord2.first;
+    int r2 = coord2.second;
+    int s2 = -q2 - r2;
+
+    return (abs(q1 - q2) + abs(r1 - r2) + abs(s1 - s2)) / 2;
 }
 
 /**
@@ -119,9 +127,35 @@ bool HexBoard::is_edge(const pair<int, int>& coord) const {
  * REQUIRE: create_board() is already called
  */
 void HexBoard::generate_maze(pair<int, int> start, double branch_prob, int seed) {
-    /**
-     * @todo Your code here!
-     */
+    start_coord = start;
+    rng.seed(seed);
+
+    Stack<pair<int, int>> s;
+    set<pair<int, int>> v;
+
+    s.push(start);
+    v.insert(start);
+
+    while (!s.is_empty()) {
+        pair<int, int> curr_coord = s.peek();
+        int dist = cells[curr_coord]->path_dist_from_start;
+
+        HexCell* neigh_cell = choose_neighbour(curr_coord, v, branch_prob);
+        if (neigh_cell != nullptr) {
+            link(curr_coord, neigh_cell->qr);
+
+            s.push(neigh_cell->qr);
+            v.insert(neigh_cell->qr);
+
+            neigh_cell->path_dist_from_start = dist + 1;
+            if (dist + 1 > longest_path_dist) {
+                longest_path_dist = dist + 1;
+                end_coord = neigh_cell->qr;
+            }
+        } else {
+            s.pop();
+        }
+    }
 }
 
 /**
@@ -130,7 +164,30 @@ void HexBoard::generate_maze(pair<int, int> start, double branch_prob, int seed)
  * REQUIRE: generate_maze must be called already
  */
 void HexBoard::solve_maze() {
-    /**
-     * @todo Your code here!
-     */
+    Stack<pair<int, int>> s;
+    set<pair<int, int>> v;
+    Stack<vector<pair<int, int>>> p;
+
+    s.push(start_coord);
+    v.insert(start_coord);
+    p.push({start_coord});
+
+    while (!s.is_empty()) {
+        pair<int, int> curr = s.pop();
+        vector<pair<int, int>> path = p.pop();
+
+        if (curr == end_coord) {
+            solution = path;
+        }
+
+        for (pair<int, int> neighbor: get_neigh_coords(curr)) {
+            if (v.find(neighbor) == v.end()) {
+                vector<pair<int, int>> newPath = path;
+                newPath.push_back(neighbor);
+                s.push(neighbor);
+                v.insert(neighbor);
+                p.push({newPath});
+            }
+        }
+    }
 }
