@@ -26,8 +26,15 @@ void Quack<T>::push_right(T newItem) {
     /**
      * @todo Your code here!
      */
-    data.push_back(newItem);
+
+
+    if (n2 == (int) (data.size() -1)) {
+        data.push_back(T());
+    }
+
+    data[n2 + 1] = newItem;
     n2++;
+    
     //std::cout << "n1:" << n1 << std::endl;
     //std::cout << "n2:" << n2 << std::endl;
 }
@@ -97,8 +104,9 @@ T Quack<T>::pop_right() {
     }
 
     T item = data[n2];
+    data[n2] = T();
     n2--;
-    data.pop_back();
+    //data.pop_back();
 
     if ((n2 - n1) <= (n1 + 1))
     {
