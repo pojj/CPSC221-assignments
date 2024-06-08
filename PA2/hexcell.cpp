@@ -5,9 +5,10 @@
  * @param QR Axial coordinates of the hex cell
  */
 HexCell::HexCell(std::pair<int, int> QR) {
-    /**
-     * @todo Your code here!
-     */
+    qr = QR;
+    path_dist_from_start = 0;
+    for (bool& direction : walls)
+        direction = true;
 }
 
 /**
@@ -18,8 +19,23 @@ HexCell::HexCell(std::pair<int, int> QR) {
  * REQUIRE: cell is a neighbour of this cell
  */
 int HexCell::get_neighbour_side(const HexCell* cell) const {
-    /**
-     * @todo Your code here! You will need to replace the following line.
-     */
-    return -1;
+    int q = qr.first - cell->qr.first;
+    int r = qr.second - cell->qr.second;
+    
+    if (q == 0) {
+        if (r == 1) 
+            return N;
+        else
+            return S;
+    } else if (q == 1) {
+        if (r == 0)
+            return NW;
+        else
+            return SW;
+    } else {
+        if (r == 0)
+            return SW;
+        else
+            return NW;
+    }
 }
