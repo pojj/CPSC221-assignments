@@ -11,25 +11,31 @@
  * @param rad The radius of the board
  */
 HexBoard::HexBoard(int rad) {
-    /**
-     * @todo Your code here!
-     */
+    create_board();
+    start_coord.first = 0;
+    start_coord.second = 0;
+    end_coord.first = 0;
+    end_coord.second = 0;
 }
 
 // Frees all dynamically allocated memory associated with the board.
 HexBoard::~HexBoard() {
-    /**
-     * @todo Your code here!
-     */
+    for (auto& kv : cells) {
+        delete kv.second;   
+    }
 }
 
 /**
  * Creates all neccessary HexCells up to the given radius and insert them into this->cells.
  */
 void HexBoard::create_board() {
-    /**
-     * @todo Your code here!
-     */
+    for (int q = -radius; q <= radius; q++) {
+        int r1 = std::max(-radius, -radius - q);
+        int r2 = std::min(radius, radius - q);
+        for (int r = r1; r <= r2; r++) {
+            cells[{q, r}] = new HexCell({q, r});
+        }
+    }
 }
 
 /**
@@ -37,10 +43,15 @@ void HexBoard::create_board() {
  * @param coord The input coordinate.
  */
 vector<pair<int, int>> HexBoard::get_neigh_coords(const pair<int, int>& coord) const {
-    /**
-     * @todo Your code here! You will need to replace the following line.
-     */
-    return {};
+    vector<pair<int, int>> neighbors;
+
+    for (int i = 0; i < 6; i++) {
+        int x = coord.first + directions[i][0];
+        int y = coord.second + directions[i][1];
+        neighbors.push_back({x, y});
+    }
+
+    return neighbors;
 }
 
 /**
@@ -51,9 +62,11 @@ vector<pair<int, int>> HexBoard::get_neigh_coords(const pair<int, int>& coord) c
  * REQUIRE: the two coords are neighbours
  */
 void HexBoard::link(const pair<int, int>& coord1, const pair<int, int>& coord2) const {
-    /**
-     * @todo Your code here!
-     */
+    HexCell* c1 = cells.find(coord1)->second;
+    HexCell* c2 = cells.find(coord2)->second;
+    
+    c1->walls[c1->get_neighbour_side(c2)] = false;
+    c2->walls[c2->get_neighbour_side(c1)] = false;
 }
 
 /**
@@ -62,20 +75,18 @@ void HexBoard::link(const pair<int, int>& coord1, const pair<int, int>& coord2) 
  * @return The cell distance (ignoring walls) between coord1 and coord2.
  */
 int HexBoard::distance(const pair<int, int>& coord1, const pair<int, int>& coord2) const {
-    /**
-     * @todo Your code here! You will need to replace the following line.
-     */
-    return -1;
+    // work in progess
 }
 
 /**
  * @return true if coord is at the edge of the board, false otherwise.
  */
 bool HexBoard::is_edge(const pair<int, int>& coord) const {
-    /**
-     * @todo Your code here! You will need to replace the following line.
-     */
-    return false;
+    int q = coord.first;
+    int r = coord.second;
+    int s = -q - r;
+
+    return abs(q) == radius || abs(r) == radius || abs(s) == radius;
 }
 
 /**
