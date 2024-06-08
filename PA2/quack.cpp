@@ -12,8 +12,8 @@ Quack<T>::Quack() {
      */
     //vector<T> newVec(1);
     
-    n1 = -1; // one to the left of left element of quack
-    n2 = -1;  // right element side of quack
+    n1 = -1; // the position of the most recent element removed on the left of the vector
+    n2 = -1;  // the position of the most recent element added on the right of the vector
 }
 
 /**
@@ -54,13 +54,13 @@ T Quack<T>::pop_left() {
     T item = data[n1];
     data[n1] = T();
 
-    if ((n2 - n1) == (n1 + 1))
+    if ((n2 - n1) <= (n1 + 1))
     {
-        // resize to 1/2 of previous size
+        // resize to n2 - n1 of previous size
         //td::cout << "fn1:" << n1 << std::endl;
         //std::cout << "fn2:" << n2 << std::endl;
 
-        int c = (n1 + 1);
+        int c = (n2 - n1);
 
         vector<T> temp(c);
 
@@ -96,13 +96,17 @@ T Quack<T>::pop_right() {
         return T();
     }
 
-    if ((n2 - n1) == (n1 + 1))
+    T item = data[n2];
+    n2--;
+    data.pop_back();
+
+    if ((n2 - n1) <= (n1 + 1))
     {
-        // resize to 1/2 of previous size
+        // resize to n2 - n1 of previous size
         // td::cout << "fn1:" << n1 << std::endl;
         // std::cout << "fn2:" << n2 << std::endl;
 
-        int c = (n1 + 1);
+        int c = (n2 - n1);
 
         vector<T> temp(c);
 
@@ -120,9 +124,6 @@ T Quack<T>::pop_right() {
         n1 = -1;
     }
 
-    T item = data[n2];
-    n2--;
-    data.pop_back();
     //std::cout << "n1:" << n1 << std::endl;
     //std::cout << "n2:" << n2 << std::endl;
 
