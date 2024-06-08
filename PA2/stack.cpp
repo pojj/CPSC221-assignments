@@ -14,6 +14,7 @@ void Stack<T>::push(T newItem) {
     /**
      * @todo Your code here!
      */
+    myStack.push_right(newItem);
 }
 
 /**
@@ -30,7 +31,9 @@ T Stack<T>::pop() {
     /**
      * @todo Your code here! You will need to replace the following line.
      */
-    return T();
+    
+    T item = myStack.pop_right();
+    return item;
 }
 
 /**
@@ -46,7 +49,8 @@ T Stack<T>::peek() {
     /**
      * @todo Your code here! You will need to replace the following line.
      */
-    return T();
+    T item = myStack.peekR();
+    return item;
 }
 
 /**
@@ -59,5 +63,5 @@ bool Stack<T>::is_empty() const {
     /**
      * @todo Your code here! You will need to replace the following line.
      */
-    return true;
+    return myStack.is_empty();
 }
