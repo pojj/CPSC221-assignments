@@ -11,11 +11,13 @@
  * @param rad The radius of the board
  */
 HexBoard::HexBoard(int rad) {
-    create_board();
     start_coord.first = 0;
     start_coord.second = 0;
     end_coord.first = 0;
     end_coord.second = 0;
+    radius = rad;
+    longest_path_dist = 0;
+    create_board();
 }
 
 // Frees all dynamically allocated memory associated with the board.
@@ -176,12 +178,19 @@ void HexBoard::solve_maze() {
         pair<int, int> curr = s.pop();
         vector<pair<int, int>> path = p.pop();
 
+        // cout << curr.first << "," << curr.second << endl;
         if (curr == end_coord) {
             solution = path;
+            return;
         }
 
         for (pair<int, int> neighbor: get_neigh_coords(curr)) {
-            if (v.find(neighbor) == v.end()) {
+            if (cells.find(neighbor) == cells.end() || v.find(neighbor) != v.end())
+                continue;
+            
+            int dir = cells[curr]->get_neighbour_side(cells[neighbor]);
+
+            if (!cells[curr]->walls[dir]) {
                 vector<pair<int, int>> newPath = path;
                 newPath.push_back(neighbor);
                 s.push(neighbor);

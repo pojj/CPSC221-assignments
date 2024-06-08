@@ -28,8 +28,8 @@ void Quack<T>::push_right(T newItem) {
      */
     data.push_back(newItem);
     n2++;
-    std::cout << "n1:" << n1 << std::endl;
-    std::cout << "n2:" << n2 << std::endl;
+    //std::cout << "n1:" << n1 << std::endl;
+    //std::cout << "n2:" << n2 << std::endl;
 }
 
 /**
