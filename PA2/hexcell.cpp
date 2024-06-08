@@ -34,8 +34,8 @@ int HexCell::get_neighbour_side(const HexCell* cell) const {
             return SW;
     } else {
         if (r == 0)
-            return SW;
+            return SE;
         else
-            return NW;
+            return NE;
     }
 }
