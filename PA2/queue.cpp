@@ -14,6 +14,7 @@ void Queue<T>::enqueue(T newItem) {
     /**
      * @todo Your code here!
      */
+    myQueue.push_right(newItem);
 }
 
 /**
@@ -30,8 +31,8 @@ T Queue<T>::dequeue() {
     /**
      * @todo Your code here! You will need to replace the following line.
      */
-
-    return T();
+    T item = myQueue.pop_left();
+    return item;
 }
 
 /**
@@ -47,7 +48,8 @@ T Queue<T>::peek() {
     /**
      * @todo Your code here! You will need to replace the following line.
      */
-    return T();
+    T item = myQueue.peekL();
+    return item;
 }
 
 /**
@@ -60,5 +62,5 @@ bool Queue<T>::is_empty() const {
     /**
      * @todo Your code here! You will need to replace the following line.
      */
-    return true;
+    return myQueue.is_empty();
 }
