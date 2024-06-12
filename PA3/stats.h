@@ -92,6 +92,7 @@ class Stats {
          *  @param right - x-coordinate of the right side of the rectangular region
          *  @return the area of the defined rectangular area, in pixels
          */
+        // NOTE: 0,0 0,0 returns 1, the pixles on the corners and edges are counted
         unsigned int GetRectangleArea(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right);
 
     public:
