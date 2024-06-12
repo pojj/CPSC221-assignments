@@ -54,8 +54,12 @@ ImgTree::ImgTree() {
  *     the same minimal area difference, the one with the smaller coordinate will be chosen.
  */
 ImgTree::ImgTree(const PNG& img) {
-    // complete your implementation below
+    imgwidth = img.width();
+    imgheight = img.height();
 
+    Stats s(img);
+
+    root = BuildNode(s, 0, 0, imgheight-1, imgwidth-1);
 }
 
 /**
@@ -63,8 +67,15 @@ ImgTree::ImgTree(const PNG& img) {
  *  Will be useful to define a recursive helper function for this.
  */
 void ImgTree::Clear() {
-    // complete your implementation below
+    rClear(root);
+}
 
+void ImgTree::rClear(ImgTreeNode* node) {
+    if (node->A != nullptr) {
+        rClear(node->A);
+        rClear(node->B);
+    }
+    delete node;
 }
 
 /**
@@ -75,8 +86,20 @@ void ImgTree::Clear() {
  *        See the documention for BuildNode - this should work similarly.
  */
 void ImgTree::Copy(const ImgTree& other) {
-    // complete your implementation below
+    imgwidth = other.imgwidth;
+    imgheight = other.imgheight;
+    root = rCopy(other.root);
+}
 
+ImgTreeNode* ImgTree::rCopy(const ImgTreeNode* other) {
+    if (other == nullptr)
+        return nullptr;
+    
+    ImgTreeNode* node = new ImgTreeNode(other->upper, other->left, other->lower, other->right, other->avg); 
+    
+    node->A = rCopy(other->A);
+    node->B = rCopy(other->B);
+    return node;
 }
 
 /**
@@ -191,10 +214,13 @@ void ImgTree::Prune(double pct, double tol) {
  */
 unsigned int ImgTree::CountLeaves() const {
     // complete your implementation below
-    return 0; // REPLACE THIS STUB
+    return rCountLeaves(root);
 }
 
-/**
- *  ADD YOUR PRIVATE FUNCTION IMPLEMENTATIONS BELOW
- */
+unsigned int ImgTree::rCountLeaves(ImgTreeNode* node) const {
+    if (node->A == nullptr) {
+        return 1;
+    }
+    return rCountLeaves(node->A) + rCountLeaves(node->B);
+}
  

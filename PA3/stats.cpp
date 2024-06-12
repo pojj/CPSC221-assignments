@@ -280,7 +280,6 @@ double Stats::GetSumSqDev(unsigned int upper, unsigned int left, unsigned int lo
   unsigned long green = GetColorSum('g', upper, left, lower, right);
   unsigned long blue = GetColorSum('b', upper, left, lower, right);
   unsigned long alpha = GetAlphaSum(upper, left, lower, right);
-  unsigned int totalPixels = GetRectangleArea(upper, left, lower, right);
 
   red = red / totalPixels;
   green = green / totalPixels;

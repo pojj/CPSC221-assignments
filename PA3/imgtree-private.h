@@ -13,3 +13,8 @@
  *  and add/complete your implementation in imgtree.cpp
  */
 
+void rClear(ImgTreeNode* node);
+
+ImgTreeNode* rCopy(const ImgTreeNode* node);
+
+unsigned int rCountLeaves(ImgTreeNode* node) const;
