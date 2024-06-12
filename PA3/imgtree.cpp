@@ -13,8 +13,9 @@
  *  Default constructor creates an empty tree
  */
 ImgTree::ImgTree() {
-    // complete your implementation below
-
+    root = nullptr;
+    imgwidth = 0;
+    imgheight = 0;
 }
 
 /**
@@ -90,8 +91,58 @@ void ImgTree::Copy(const ImgTree& other) {
  *  @return - pointer to a (completed) newly-allocated node for the specified parameters.
  */
 ImgTreeNode* ImgTree::BuildNode(Stats& s, unsigned int upr, unsigned int lft, unsigned int lwr, unsigned int rt) {
-    // complete your implementation below
-    return nullptr; // REPLACE THIS STUB
+    unsigned int width = rt - lft + 1;
+    unsigned int height = lwr - upr + 1;
+
+    ImgTreeNode* node = new ImgTreeNode(upr, lft, lwr, rt, s.GetAvg(upr, lft, lwr, rt));
+
+    if (width == 1 && height == 1) {
+        // no children
+    } else if (width >= height) {
+        SplitInfo best;
+        best.sumsqscore = __DBL_MAX__;
+        best.coordinate = 0;
+        unsigned int center = lft + width/2 - 1;
+
+        for (unsigned int i = lft; i < rt; i++) {
+            double score = s.GetSumSqDev(upr, lft, lwr, i) + s.GetSumSqDev(upr, i+1, lwr, rt);
+
+            if (score < best.sumsqscore) {
+                best.sumsqscore = score;
+                best.coordinate = i;
+            } else if (score == best.sumsqscore) {
+                if (abs((int)i-(int)center) < abs((int)best.coordinate-(int)center)) {
+                    best.sumsqscore = score;
+                    best.coordinate = i;
+                }
+            }
+        }
+        node->A = BuildNode(s, upr, lft, lwr, best.coordinate);
+        node->B = BuildNode(s, upr, best.coordinate+1, lwr, rt);
+    } else {
+        SplitInfo best;
+        best.sumsqscore = __DBL_MAX__;
+        best.coordinate = 0;
+        unsigned int center = lft + height/2 - 1;
+
+        for (unsigned int i = upr; i < lwr; i++) {
+            double score = s.GetSumSqDev(upr, lft, i, rt) + s.GetSumSqDev(i+1, lft, lwr, rt);
+
+            if (score < best.sumsqscore) {
+                best.sumsqscore = score;
+                best.coordinate = i;
+            } else if (score == best.sumsqscore) {
+                if (abs((int)i-(int)center) < abs((int)best.coordinate-(int)center)) {
+                    best.sumsqscore = score;
+                    best.coordinate = i;
+                }
+            }
+        }
+        node->A = BuildNode(s, upr, lft, best.coordinate, rt);
+        node->B = BuildNode(s, best.coordinate+1, lft, lwr, rt);
+    }
+
+    return node;
 }
 
 /**
