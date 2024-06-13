@@ -204,8 +204,18 @@ void ImgTree::rRender(PNG& img, unsigned int& scale, ImgTreeNode* node) const {
  *  Will be useful to define a recursive helper function for this.
  */
 void ImgTree::FlipHorizontal() {
-    // complete your implementation below
+    // hacky approach
+    PNG img = Render(1);
 
+    for (int y = 0; y < imgheight; y++) {
+        for (int x = 0; x < imgwidth/2; x++) {
+            swap(*img.getPixel(x, y), *img.getPixel(imgwidth-x-1, y));
+        }
+    }
+
+    Clear();
+    Stats s(img);
+    root = BuildNode(s, 0, 0, imgheight-1, imgwidth-1);
 }
 
 /**
