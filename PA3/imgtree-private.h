@@ -20,3 +20,5 @@ ImgTreeNode* rCopy(const ImgTreeNode* node);
 unsigned int rCountLeaves(ImgTreeNode* node) const;
 
 void rRender(PNG& img, unsigned int& scale, ImgTreeNode* node) const;
+
+void rFlipHorizontal(ImgTreeNode* node);
