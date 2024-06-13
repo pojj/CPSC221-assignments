@@ -22,7 +22,7 @@
   */
 unsigned long Stats::GetColorSum(char channel, unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
   
-  cout << "start GetColorSum" << endl;
+  //cout << "start GetColorSum" << endl;
   
   vector<vector<unsigned long>> *vect;
 
@@ -45,11 +45,11 @@ unsigned long Stats::GetColorSum(char channel, unsigned int upper, unsigned int 
   }
 
   unsigned long all = (*vect)[right][lower];
-  unsigned long cornerRegion = (*vect)[left][upper];
-  unsigned long topRegion = (*vect)[right][upper];
-  unsigned long leftRegion = (*vect)[left][lower];
+  unsigned long cornerRegion = left != 0 && upper != 0 ? (*vect)[left-1][upper-1] : 0;
+  unsigned long topRegion = upper != 0 ? (*vect)[right][upper-1] : 0;
+  unsigned long leftRegion = left != 0 ? (*vect)[left-1][lower]: 0;
   
-  cout << "end GetColorSum" << endl;
+  //cout << "end GetColorSum" << endl;
 
   return all - topRegion - leftRegion + cornerRegion;
 }
@@ -64,15 +64,15 @@ unsigned long Stats::GetColorSum(char channel, unsigned int upper, unsigned int 
  *  @return the sum of the alpha values in the defined rectangular area
  */
 double Stats::GetAlphaSum(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
-  cout << "start GetAlphaSum" << endl;
+  //cout << "start GetAlphaSum" << endl;
   vector<vector<double>> *vect = &sumA;
 
   double all = (*vect)[right][lower];
-  double cornerRegion = (*vect)[left][upper];
-  double topRegion = (*vect)[right][upper];
-  double leftRegion = (*vect)[left][lower];
+  unsigned long cornerRegion = left != 0 && upper != 0 ? (*vect)[left-1][upper-1] : 0;
+  unsigned long topRegion = upper != 0 ? (*vect)[right][upper-1] : 0;
+  unsigned long leftRegion = left != 0 ? (*vect)[left-1][lower]: 0;
   
-  cout << "end GetAlphaSum" << endl;
+  //cout << "end GetAlphaSum" << endl;
 
   return all - topRegion - leftRegion + cornerRegion;
 }
@@ -90,7 +90,7 @@ double Stats::GetAlphaSum(unsigned int upper, unsigned int left, unsigned int lo
  */
 unsigned long Stats::GetColorSumSq(char channel, unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
   
-  cout << "start GetColorSumSq" << endl;
+  //cout << "start GetColorSumSq" << endl;
 
   vector<vector<unsigned long>> *vect;
   switch (channel)
@@ -113,11 +113,11 @@ unsigned long Stats::GetColorSumSq(char channel, unsigned int upper, unsigned in
   }
 
   unsigned long all = (*vect)[right][lower];
-  unsigned long cornerRegion = (*vect)[left][upper];
-  unsigned long topRegion = (*vect)[right][upper];
-  unsigned long leftRegion = (*vect)[left][lower];
+  unsigned long cornerRegion = left != 0 && upper != 0 ? (*vect)[left-1][upper-1] : 0;
+  unsigned long topRegion = upper != 0 ? (*vect)[right][upper-1] : 0;
+  unsigned long leftRegion = left != 0 ? (*vect)[left-1][lower]: 0;
 
-  cout << "end GetColorSumSq" << endl;
+  //cout << "end GetColorSumSq" << endl;
 
   return all - topRegion - leftRegion + cornerRegion;
 }
@@ -132,16 +132,16 @@ unsigned long Stats::GetColorSumSq(char channel, unsigned int upper, unsigned in
  *  @return the squared sum of the alpha values in the defined rectangular area
  */
 double Stats::GetAlphaSumSq(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
-  cout << "start GetAlphaSumSq" << endl;
+  //cout << "start GetAlphaSumSq" << endl;
 
   vector<vector<double>> *vect = &sumSqA;
 
   double all = (*vect)[right][lower];
-  double cornerRegion = (*vect)[left][upper];
-  double topRegion = (*vect)[right][upper];
-  double leftRegion = (*vect)[left][lower];
+  unsigned long cornerRegion = left != 0 && upper != 0 ? (*vect)[left-1][upper-1] : 0;
+  unsigned long topRegion = upper != 0 ? (*vect)[right][upper-1] : 0;
+  unsigned long leftRegion = left != 0 ? (*vect)[left-1][lower]: 0;
 
-  cout << "end GetAlphaSumSq" << endl;
+  //cout << "end GetAlphaSumSq" << endl;
 
   return all - topRegion - leftRegion + cornerRegion;
 }
@@ -176,7 +176,7 @@ unsigned int Stats::GetRectangleArea(unsigned int upper, unsigned int left, unsi
  *  @param img - input image from which the channel sum vectors will be populated
  */
 Stats::Stats(const PNG& img) {
-  cout << "start Stats" << endl;
+  //cout << "start Stats" << endl;
 
   unsigned long redTotal = 0;
   unsigned long blueTotal = 0;
@@ -246,14 +246,28 @@ Stats::Stats(const PNG& img) {
         sumG[x][y] = greenTemp;
         sumB[x][y] = blueTemp;
         sumA[x][y] = alphaTemp;
+
+        sumSqR[x][y] = redSqTemp;
+        sumSqG[x][y] = greenSqTemp;
+        sumSqB[x][y] = blueSqTemp;
+        sumSqA[x][y] = alphaSqTemp;
       }
       
     }
-
-
   }
 
-  cout << "start Stats" << endl;
+  // cout << endl;
+
+  // for (int y = 0; y < height; y++) {
+  //   for (int x = 0; x < width; x++) {
+  //     cout << sumSqR[x][y] << " ";
+  //   }
+  //   cout << endl;
+  // }
+
+  // cout << GetColorSumSq('r', 1, 1, 2, 2) << endl;
+
+  //cout << "start Stats" << endl;
 
 }
 
@@ -269,7 +283,7 @@ Stats::Stats(const PNG& img) {
  *  @return pixel containing the average color of the pixels in the defined rectangle
  */
 RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
-  cout << "start GetAvg" << endl;
+  //cout << "start GetAvg" << endl;
   unsigned long red = GetColorSum('r', upper, left, lower, right);
   unsigned long green = GetColorSum('g', upper, left, lower, right);
   unsigned long blue = GetColorSum('b', upper, left, lower, right);
@@ -280,9 +294,9 @@ RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lowe
   blue = blue / totalPixels;
   alpha = alpha / totalPixels;
 
-  cout << "end GetAvg" << endl;
+  //cout << "end GetAvg" << endl;
 
-  return RGBAPixel(red, green, blue, alpha / 255.0);\
+  return RGBAPixel(red, green, blue);
 }
 
 /**
@@ -302,31 +316,25 @@ RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lowe
  */
 double Stats::GetSumSqDev(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
   
-  cout << "start GetSumSqDev" << endl;
+  //cout << "start GetSumSqDev" << endl;
 
-  unsigned long Sqred = GetColorSumSq('r', upper, left, lower, right);
-  unsigned long Sqgreen = GetColorSumSq('g', upper, left, lower, right);
-  unsigned long Sqblue = GetColorSumSq('b', upper, left, lower, right);
-  unsigned long Sqalpha = GetAlphaSumSq(upper, left, lower, right);
-  unsigned int totalPixels = GetRectangleArea(upper, left, lower, right);
+  double Sqred = GetColorSumSq('r', upper, left, lower, right);
+  double Sqgreen = GetColorSumSq('g', upper, left, lower, right);
+  double Sqblue = GetColorSumSq('b', upper, left, lower, right);
+  double Sqalpha = GetAlphaSumSq(upper, left, lower, right);
+  double totalPixels = GetRectangleArea(upper, left, lower, right);
 
-  unsigned long red = GetColorSum('r', upper, left, lower, right);
-  unsigned long green = GetColorSum('g', upper, left, lower, right);
-  unsigned long blue = GetColorSum('b', upper, left, lower, right);
-  unsigned long alpha = GetAlphaSum(upper, left, lower, right);
+  double red = GetColorSum('r', upper, left, lower, right);
+  double green = GetColorSum('g', upper, left, lower, right);
+  double blue = GetColorSum('b', upper, left, lower, right);
+  double alpha = GetAlphaSum(upper, left, lower, right);
 
-  red = red / totalPixels;
-  green = green / totalPixels;
-  blue = blue / totalPixels;
-  alpha = alpha / totalPixels;
-  // alpha is multiplied by 255.0
+  double devRed = Sqred - red * red / totalPixels;
+  double devGreen = Sqgreen - green * green / totalPixels;
+  double devBlue = Sqblue - blue * blue / totalPixels;
+  double devAlpha = Sqalpha - alpha * alpha / totalPixels;
 
-  unsigned long devRed = Sqred - red * red / totalPixels;
-  unsigned long devGreen = Sqgreen - green * green / totalPixels;
-  unsigned long devBlue = Sqblue - blue * blue / totalPixels;
-  unsigned long devAlpha = Sqalpha - alpha * alpha / totalPixels;
-
-  cout << "end GetSumSqDev" << endl;
+  //cout << "end GetSumSqDev" << endl;
 
   return devRed + devGreen + devBlue + devAlpha; // REPLACE THIS STUB
 }

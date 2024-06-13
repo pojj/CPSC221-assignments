@@ -49,8 +49,8 @@ int main(int argc, char* argv[]) {
 	// add or uncomment calls to test functions as needed
 	TestStats();
 	TestImgTreeBuildRender();
-	TestImgTreeFlipHorizontal();
-	TestImgTreeCountLeavesPrune();
+	//TestImgTreeFlipHorizontal();
+	//TestImgTreeCountLeavesPrune();
 
 	return 0;
 }

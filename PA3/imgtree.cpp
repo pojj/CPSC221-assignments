@@ -176,8 +176,25 @@ ImgTreeNode* ImgTree::BuildNode(Stats& s, unsigned int upr, unsigned int lft, un
  *  @return fully-colored PNG, painted from the tree's leaf node data
  */
 PNG ImgTree::Render(unsigned int scale) const {
-    // complete your implementation below
-    return PNG(); // REPLACE THIS STUB
+    PNG img = PNG(imgwidth*scale, imgheight*scale);
+
+    rRender(img, scale, root);
+
+    return img;
+}
+
+void ImgTree::rRender(PNG& img, unsigned int& scale, ImgTreeNode* node) const {
+    if (node->A == nullptr) {
+        for (int i = node->upper*scale; i <= node->lower*scale; i++) {
+            for (int j = node->left*scale; j <= node->left*scale; j++) {
+                *img.getPixel(i, j) = node->avg;
+            }
+        }
+    } else {
+        rRender(img, scale, node->A);
+        rRender(img, scale, node->B);
+    }
+
 }
 
 /**
