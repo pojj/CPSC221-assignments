@@ -187,7 +187,7 @@ void ImgTree::rRender(PNG& img, unsigned int& scale, ImgTreeNode* node) const {
     if (node->A == nullptr) {
         for (int i = node->upper*scale; i <= node->lower*scale; i++) {
             for (int j = node->left*scale; j <= node->left*scale; j++) {
-                *img.getPixel(i, j) = node->avg;
+                *img.getPixel(j, i) = node->avg;
             }
         }
     } else {

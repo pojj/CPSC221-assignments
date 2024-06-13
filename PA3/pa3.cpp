@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 	SetImagePaths(image_number);
 
 	// add or uncomment calls to test functions as needed
-	TestStats();
+	//TestStats();
 	TestImgTreeBuildRender();
 	//TestImgTreeFlipHorizontal();
 	//TestImgTreeCountLeavesPrune();
