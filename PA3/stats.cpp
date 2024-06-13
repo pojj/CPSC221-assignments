@@ -21,6 +21,9 @@
   *  @return the sum of the appropriate color channel values in the defined rectangular area
   */
 unsigned long Stats::GetColorSum(char channel, unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
+  
+  cout << "start GetColorSum" << endl;
+  
   vector<vector<unsigned long>> *vect;
 
   switch (channel)
@@ -45,6 +48,8 @@ unsigned long Stats::GetColorSum(char channel, unsigned int upper, unsigned int 
   unsigned long cornerRegion = (*vect)[left][upper];
   unsigned long topRegion = (*vect)[right][upper];
   unsigned long leftRegion = (*vect)[left][lower];
+  
+  cout << "end GetColorSum" << endl;
 
   return all - topRegion - leftRegion + cornerRegion;
 }
@@ -59,12 +64,16 @@ unsigned long Stats::GetColorSum(char channel, unsigned int upper, unsigned int 
  *  @return the sum of the alpha values in the defined rectangular area
  */
 double Stats::GetAlphaSum(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
+  cout << "start GetAlphaSum" << endl;
   vector<vector<double>> *vect = &sumA;
 
   double all = (*vect)[right][lower];
   double cornerRegion = (*vect)[left][upper];
   double topRegion = (*vect)[right][upper];
   double leftRegion = (*vect)[left][lower];
+  
+  cout << "end GetAlphaSum" << endl;
+
   return all - topRegion - leftRegion + cornerRegion;
 }
 
@@ -80,6 +89,9 @@ double Stats::GetAlphaSum(unsigned int upper, unsigned int left, unsigned int lo
  *  @return the squared sum of the appropriate color channel values in the defined rectangular area
  */
 unsigned long Stats::GetColorSumSq(char channel, unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
+  
+  cout << "start GetColorSumSq" << endl;
+
   vector<vector<unsigned long>> *vect;
   switch (channel)
   {
@@ -105,6 +117,8 @@ unsigned long Stats::GetColorSumSq(char channel, unsigned int upper, unsigned in
   unsigned long topRegion = (*vect)[right][upper];
   unsigned long leftRegion = (*vect)[left][lower];
 
+  cout << "end GetColorSumSq" << endl;
+
   return all - topRegion - leftRegion + cornerRegion;
 }
 
@@ -118,12 +132,17 @@ unsigned long Stats::GetColorSumSq(char channel, unsigned int upper, unsigned in
  *  @return the squared sum of the alpha values in the defined rectangular area
  */
 double Stats::GetAlphaSumSq(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
+  cout << "start GetAlphaSumSq" << endl;
+
   vector<vector<double>> *vect = &sumSqA;
 
   double all = (*vect)[right][lower];
   double cornerRegion = (*vect)[left][upper];
   double topRegion = (*vect)[right][upper];
   double leftRegion = (*vect)[left][lower];
+
+  cout << "end GetAlphaSumSq" << endl;
+
   return all - topRegion - leftRegion + cornerRegion;
 }
 
@@ -138,7 +157,7 @@ double Stats::GetAlphaSumSq(unsigned int upper, unsigned int left, unsigned int 
  */
 //NOTE: 0,0 0,0 returns 1, the pixles on the corners and edges are counted
 unsigned int Stats::GetRectangleArea(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
-  unsigned int height = upper - lower + 1;
+  unsigned int height = lower - upper + 1;
   unsigned int width = right - left + 1;
   unsigned int area = height * width;
   return area; // REPLACE THIS STUB
@@ -157,6 +176,7 @@ unsigned int Stats::GetRectangleArea(unsigned int upper, unsigned int left, unsi
  *  @param img - input image from which the channel sum vectors will be populated
  */
 Stats::Stats(const PNG& img) {
+  cout << "start Stats" << endl;
 
   unsigned long redTotal = 0;
   unsigned long blueTotal = 0;
@@ -165,6 +185,14 @@ Stats::Stats(const PNG& img) {
 
   unsigned int height = img.height();
   unsigned int width = img.width();
+
+  sumR.resize(width); sumG.resize(width); sumB.resize(width); sumA.resize(width);
+  sumSqR.resize(width); sumSqG.resize(width); sumSqB.resize(width); sumSqA.resize(width);
+
+  for (int i = 0; i < width; i++) {
+    sumR[i].resize(height); sumG[i].resize(height); sumB[i].resize(height); sumA[i].resize(height);
+    sumSqR[i].resize(height); sumSqG[i].resize(height); sumSqB[i].resize(height); sumSqA[i].resize(height);
+  }
 
   unsigned long redTemp = 0;
   unsigned long blueTemp = 0;
@@ -225,7 +253,7 @@ Stats::Stats(const PNG& img) {
 
   }
 
-  // complete your implementation below
+  cout << "start Stats" << endl;
 
 }
 
@@ -241,6 +269,7 @@ Stats::Stats(const PNG& img) {
  *  @return pixel containing the average color of the pixels in the defined rectangle
  */
 RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
+  cout << "start GetAvg" << endl;
   unsigned long red = GetColorSum('r', upper, left, lower, right);
   unsigned long green = GetColorSum('g', upper, left, lower, right);
   unsigned long blue = GetColorSum('b', upper, left, lower, right);
@@ -251,7 +280,9 @@ RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lowe
   blue = blue / totalPixels;
   alpha = alpha / totalPixels;
 
-  return RGBAPixel(red, green, blue, alpha / 255.0); // REPLACE THIS STUB
+  cout << "end GetAvg" << endl;
+
+  return RGBAPixel(red, green, blue, alpha / 255.0);\
 }
 
 /**
@@ -270,6 +301,9 @@ RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lowe
  *  @return total sum of squared deviations from the mean, over all color channels.
  */
 double Stats::GetSumSqDev(unsigned int upper, unsigned int left, unsigned int lower, unsigned int right) {
+  
+  cout << "start GetSumSqDev" << endl;
+
   unsigned long Sqred = GetColorSumSq('r', upper, left, lower, right);
   unsigned long Sqgreen = GetColorSumSq('g', upper, left, lower, right);
   unsigned long Sqblue = GetColorSumSq('b', upper, left, lower, right);
@@ -291,6 +325,8 @@ double Stats::GetSumSqDev(unsigned int upper, unsigned int left, unsigned int lo
   unsigned long devGreen = Sqgreen - green * green / totalPixels;
   unsigned long devBlue = Sqblue - blue * blue / totalPixels;
   unsigned long devAlpha = Sqalpha - alpha * alpha / totalPixels;
+
+  cout << "end GetSumSqDev" << endl;
 
   return devRed + devGreen + devBlue + devAlpha; // REPLACE THIS STUB
 }
