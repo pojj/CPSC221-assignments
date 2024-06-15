@@ -228,9 +228,53 @@ void ImgTree::rFlipHorizontal(ImgTreeNode* node) {
  *  @param tol threshold color difference to qualify for pruning
  */
 void ImgTree::Prune(double pct, double tol) {
+    rPrune(root, pct, tol);
     // complete your implementation below
-
 }
+
+//bool ImgTree::canClear(RGBAPixel color, double pct, double tol)
+//{
+//}
+
+void rPrune(ImgTreeNode *node, double pct, double tol) {
+    if (node == nullptr) {
+        return;
+    }
+    RGBAPixel color = node->avg;
+
+    unsigned int total = rCountLeaves(node);
+
+    int number = findNumberInTol(color, node, tol);
+
+    double precent = (double)number / (double)total;
+
+    if (precent >= pct) {
+        rClear(node);
+        return;
+    }
+
+    rPrune(node->A, pct, tol);
+
+    rPrune(node->B, pct, tol);
+}
+
+int ImgTree::findNumberInTol(RGBAPixel color, ImgTreeNode *node, double tol)
+{
+    
+    ImgTreeNode* left = node->A;
+    ImgTreeNode* right = node->B;
+
+    if (left == nullptr && right == nullptr)
+    {
+        double dist = color.dist(node->avg);
+        return (dist <= tol) ? 1 : 0;
+    }
+
+    return findNumberInTol(color, left, tol) + findNumberInTol(color, right, tol);
+}
+
+// use RGBAPixel::dist(const RGBAPixel& other)
+// use rClear(ImgTreeNode* node)
 
 /**
  *  Counts the number of leaf nodes in the tree.

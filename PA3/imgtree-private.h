@@ -22,3 +22,8 @@ unsigned int rCountLeaves(ImgTreeNode* node) const;
 void rRender(PNG& img, unsigned int& scale, ImgTreeNode* node) const;
 
 void rFlipHorizontal(ImgTreeNode* node);
+
+//bool canClear(RGBAPixel color, double pct, double tol);
+void rPrune(ImgTreeNode *node, double pct, double tol);
+
+int findNumberInTol(RGBAPixel color, ImgTreeNode *node, double tol);
