@@ -189,17 +189,25 @@ PNG ImgTree::Render(unsigned int scale) const {
 }
 
 void ImgTree::rRender(PNG& img, unsigned int& scale, ImgTreeNode* node) const {
+    unsigned int upr = min(node->upper, node->lower);
+    unsigned int lwr = max(node->upper, node->lower);
+    unsigned int lft = min(node->left, node->right);
+    unsigned int rt = max(node->left, node->right);
     if (node->A == nullptr) {
-        for (unsigned int i = node->upper*scale; i <= node->lower*scale; i++) {
-            for (unsigned int j = node->left*scale; j <= node->right*scale; j++) {
-                *img.getPixel(j, i) = node->avg;
+        for (unsigned int i = upr*scale; i <= lwr*scale; i+=scale) {
+            for (unsigned int j = lft*scale; j <= rt*scale; j+=scale) {
+                for (unsigned int k = 0; k < scale; k++) {
+                    for (unsigned int l = 0; l < scale; l++) {
+                        *img.getPixel(j+k, i+l) = node->avg;
+                    }
+                }
+                
             }
         }
     } else {
         rRender(img, scale, node->A);
         rRender(img, scale, node->B);
     }
-
 }
 
 /**

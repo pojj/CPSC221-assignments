@@ -291,7 +291,7 @@ RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lowe
 
   //cout << "end GetAvg" << endl;
 
-  return RGBAPixel(red, green, blue);// alpha/255);
+  return RGBAPixel(red, green, blue, alpha/255);
 }
 
 /**
