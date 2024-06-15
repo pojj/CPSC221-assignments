@@ -68,9 +68,9 @@ double Stats::GetAlphaSum(unsigned int upper, unsigned int left, unsigned int lo
   vector<vector<double>> *vect = &sumA;
 
   double all = (*vect)[right][lower];
-  unsigned long cornerRegion = left != 0 && upper != 0 ? (*vect)[left-1][upper-1] : 0;
-  unsigned long topRegion = upper != 0 ? (*vect)[right][upper-1] : 0;
-  unsigned long leftRegion = left != 0 ? (*vect)[left-1][lower]: 0;
+  double cornerRegion = left != 0 && upper != 0 ? (*vect)[left-1][upper-1] : 0;
+  double topRegion = upper != 0 ? (*vect)[right][upper-1] : 0;
+  double leftRegion = left != 0 ? (*vect)[left-1][lower]: 0;
   
   //cout << "end GetAlphaSum" << endl;
 
@@ -137,9 +137,9 @@ double Stats::GetAlphaSumSq(unsigned int upper, unsigned int left, unsigned int 
   vector<vector<double>> *vect = &sumSqA;
 
   double all = (*vect)[right][lower];
-  unsigned long cornerRegion = left != 0 && upper != 0 ? (*vect)[left-1][upper-1] : 0;
-  unsigned long topRegion = upper != 0 ? (*vect)[right][upper-1] : 0;
-  unsigned long leftRegion = left != 0 ? (*vect)[left-1][lower]: 0;
+  double cornerRegion = left != 0 && upper != 0 ? (*vect)[left-1][upper-1] : 0;
+  double topRegion = upper != 0 ? (*vect)[right][upper-1] : 0;
+  double leftRegion = left != 0 ? (*vect)[left-1][lower]: 0;
 
   //cout << "end GetAlphaSumSq" << endl;
 
@@ -178,18 +178,13 @@ unsigned int Stats::GetRectangleArea(unsigned int upper, unsigned int left, unsi
 Stats::Stats(const PNG& img) {
   //cout << "start Stats" << endl;
 
-  unsigned long redTotal = 0;
-  unsigned long blueTotal = 0;
-  unsigned long greenTotal = 0;
-  double alphaTotal = 0;
-
   unsigned int height = img.height();
   unsigned int width = img.width();
 
   sumR.resize(width); sumG.resize(width); sumB.resize(width); sumA.resize(width);
   sumSqR.resize(width); sumSqG.resize(width); sumSqB.resize(width); sumSqA.resize(width);
 
-  for (int i = 0; i < width; i++) {
+  for (unsigned int i = 0; i < width; i++) {
     sumR[i].resize(height); sumG[i].resize(height); sumB[i].resize(height); sumA[i].resize(height);
     sumSqR[i].resize(height); sumSqG[i].resize(height); sumSqB[i].resize(height); sumSqA[i].resize(height);
   }
@@ -206,7 +201,7 @@ Stats::Stats(const PNG& img) {
 
   RGBAPixel* pix;
 
-  for (int y = 0; y < height; y++)
+  for (unsigned int y = 0; y < height; y++)
   {
     redTemp = 0;
     blueTemp = 0;
@@ -218,7 +213,7 @@ Stats::Stats(const PNG& img) {
     greenSqTemp = 0;
     alphaSqTemp = 0;
 
-    for (int x = 0; x < width; x++)
+    for (unsigned int x = 0; x < width; x++)
     {
       pix = img.getPixel(x, y);
       redTemp += (unsigned long) pix->r;
@@ -287,7 +282,7 @@ RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lowe
   unsigned long red = GetColorSum('r', upper, left, lower, right);
   unsigned long green = GetColorSum('g', upper, left, lower, right);
   unsigned long blue = GetColorSum('b', upper, left, lower, right);
-  unsigned long alpha = GetAlphaSum(upper, left, lower, right);
+  double alpha = GetAlphaSum(upper, left, lower, right);
   unsigned int totalPixels = GetRectangleArea(upper, left, lower, right);
   red = red / totalPixels;
   green = green / totalPixels;
@@ -296,7 +291,7 @@ RGBAPixel Stats::GetAvg(unsigned int upper, unsigned int left, unsigned int lowe
 
   //cout << "end GetAvg" << endl;
 
-  return RGBAPixel(red, green, blue);
+  return RGBAPixel(red, green, blue);// alpha/255);
 }
 
 /**
@@ -336,5 +331,5 @@ double Stats::GetSumSqDev(unsigned int upper, unsigned int left, unsigned int lo
 
   //cout << "end GetSumSqDev" << endl;
 
-  return devRed + devGreen + devBlue + devAlpha; // REPLACE THIS STUB
+  return devRed + devGreen + devBlue; //+ devAlpha; // REPLACE THIS STUB
 }

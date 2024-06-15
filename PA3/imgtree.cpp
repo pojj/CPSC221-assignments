@@ -125,12 +125,14 @@ ImgTreeNode* ImgTree::BuildNode(Stats& s, unsigned int upr, unsigned int lft, un
     ImgTreeNode* node = new ImgTreeNode(upr, lft, lwr, rt, s.GetAvg(upr, lft, lwr, rt));
 
     if (width == 1 && height == 1) {
-        // no children
-    } else if (width >= height) {
+        return node; 
+    } 
+
+    if (width >= height) {
         SplitInfo best;
         best.sumsqscore = __DBL_MAX__;
         best.coordinate = 0;
-        unsigned int center = lft + width/2 - 1;
+        double center = ((double)(lft + rt))/2 - 0.5;
 
         for (unsigned int i = lft; i < rt; i++) {
             double score = s.GetSumSqDev(upr, lft, lwr, i) + s.GetSumSqDev(upr, i+1, lwr, rt);
@@ -139,8 +141,7 @@ ImgTreeNode* ImgTree::BuildNode(Stats& s, unsigned int upr, unsigned int lft, un
                 best.sumsqscore = score;
                 best.coordinate = i;
             } else if (score == best.sumsqscore) {
-                if (abs((int)i-(int)center) < abs((int)best.coordinate-(int)center)) {
-                    best.sumsqscore = score;
+                if (abs((double)i-center) < abs((double)best.coordinate-center)) {
                     best.coordinate = i;
                 }
             }
@@ -151,7 +152,7 @@ ImgTreeNode* ImgTree::BuildNode(Stats& s, unsigned int upr, unsigned int lft, un
         SplitInfo best;
         best.sumsqscore = __DBL_MAX__;
         best.coordinate = 0;
-        unsigned int center = lft + height/2 - 1;
+        double center = (double(upr + lwr))/2 - 0.5;
 
         for (unsigned int i = upr; i < lwr; i++) {
             double score = s.GetSumSqDev(upr, lft, i, rt) + s.GetSumSqDev(i+1, lft, lwr, rt);
@@ -160,8 +161,7 @@ ImgTreeNode* ImgTree::BuildNode(Stats& s, unsigned int upr, unsigned int lft, un
                 best.sumsqscore = score;
                 best.coordinate = i;
             } else if (score == best.sumsqscore) {
-                if (abs((int)i-(int)center) < abs((int)best.coordinate-(int)center)) {
-                    best.sumsqscore = score;
+                if (abs((double)i-center) < abs((double)best.coordinate-center)) {
                     best.coordinate = i;
                 }
             }
@@ -190,8 +190,8 @@ PNG ImgTree::Render(unsigned int scale) const {
 
 void ImgTree::rRender(PNG& img, unsigned int& scale, ImgTreeNode* node) const {
     if (node->A == nullptr) {
-        for (int i = node->upper*scale; i <= node->lower*scale; i++) {
-            for (int j = node->left*scale; j <= node->right*scale; j++) {
+        for (unsigned int i = node->upper*scale; i <= node->lower*scale; i++) {
+            for (unsigned int j = node->left*scale; j <= node->right*scale; j++) {
                 *img.getPixel(j, i) = node->avg;
             }
         }
@@ -252,7 +252,7 @@ void ImgTree::rPrune(ImgTreeNode *node, double pct, double tol)
     int number = findNumberInTol(color, node, tol);
     double precent = (double)number / (double)total;
 
-    if (precent * 100 > pct) {
+    if (precent * 100 >= pct) {
         if (node->A != nullptr) {
             rClear(node->A);
             rClear(node->B);
@@ -260,8 +260,8 @@ void ImgTree::rPrune(ImgTreeNode *node, double pct, double tol)
             node->B = nullptr;
         }
     }
-    rPrune(node->A, pct, tol);
 
+    rPrune(node->A, pct, tol);
     rPrune(node->B, pct, tol);
 
 }
