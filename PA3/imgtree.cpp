@@ -236,16 +236,15 @@ void ImgTree::Prune(double pct, double tol) {
 //{
 //}
 
-void rPrune(ImgTreeNode *node, double pct, double tol) {
+void ImgTree::rPrune(ImgTreeNode *node, double pct, double tol)
+{
     if (node == nullptr) {
         return;
     }
+
     RGBAPixel color = node->avg;
-
     unsigned int total = rCountLeaves(node);
-
     int number = findNumberInTol(color, node, tol);
-
     double precent = (double)number / (double)total;
 
     if (precent >= pct) {
