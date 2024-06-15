@@ -68,6 +68,9 @@ ImgTree::ImgTree(const PNG& img) {
  */
 void ImgTree::Clear() {
     rClear(root);
+    root = nullptr;
+    imgwidth = 0;
+    imgheight = 0;
 }
 
 void ImgTree::rClear(ImgTreeNode* node) {
@@ -186,7 +189,7 @@ PNG ImgTree::Render(unsigned int scale) const {
 void ImgTree::rRender(PNG& img, unsigned int& scale, ImgTreeNode* node) const {
     if (node->A == nullptr) {
         for (int i = node->upper*scale; i <= node->lower*scale; i++) {
-            for (int j = node->left*scale; j <= node->left*scale; j++) {
+            for (int j = node->left*scale; j <= node->right*scale; j++) {
                 *img.getPixel(j, i) = node->avg;
             }
         }
@@ -247,14 +250,18 @@ void ImgTree::rPrune(ImgTreeNode *node, double pct, double tol)
     int number = findNumberInTol(color, node, tol);
     double precent = (double)number / (double)total;
 
-    if (precent >= pct) {
-        rClear(node);
-        return;
+    if (precent * 100 >= pct) {
+        if (node->A != nullptr) {
+            rClear(node->A);
+            rClear(node->B);
+            node->A = nullptr;
+            node->B = nullptr;
+        }
     }
 
     rPrune(node->A, pct, tol);
-
     rPrune(node->B, pct, tol);
+
 }
 
 int ImgTree::findNumberInTol(RGBAPixel color, ImgTreeNode *node, double tol)
@@ -266,7 +273,7 @@ int ImgTree::findNumberInTol(RGBAPixel color, ImgTreeNode *node, double tol)
     if (left == nullptr && right == nullptr)
     {
         double dist = color.dist(node->avg);
-        return (dist <= tol) ? 1 : 0;
+        return (dist < tol) ? 1 : 0;
     }
 
     return findNumberInTol(color, left, tol) + findNumberInTol(color, right, tol);
