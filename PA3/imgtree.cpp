@@ -67,7 +67,9 @@ ImgTree::ImgTree(const PNG& img) {
  *  Will be useful to define a recursive helper function for this.
  */
 void ImgTree::Clear() {
-    rClear(root);
+    if (root != nullptr) {
+        rClear(root);
+    }
     root = nullptr;
     imgwidth = 0;
     imgheight = 0;
@@ -250,7 +252,7 @@ void ImgTree::rPrune(ImgTreeNode *node, double pct, double tol)
     int number = findNumberInTol(color, node, tol);
     double precent = (double)number / (double)total;
 
-    if (precent * 100 >= pct) {
+    if (precent * 100 > pct) {
         if (node->A != nullptr) {
             rClear(node->A);
             rClear(node->B);
@@ -258,8 +260,8 @@ void ImgTree::rPrune(ImgTreeNode *node, double pct, double tol)
             node->B = nullptr;
         }
     }
-
     rPrune(node->A, pct, tol);
+
     rPrune(node->B, pct, tol);
 
 }
@@ -273,7 +275,7 @@ int ImgTree::findNumberInTol(RGBAPixel color, ImgTreeNode *node, double tol)
     if (left == nullptr && right == nullptr)
     {
         double dist = color.dist(node->avg);
-        return (dist < tol) ? 1 : 0;
+        return (dist <= tol) ? 1 : 0;
     }
 
     return findNumberInTol(color, left, tol) + findNumberInTol(color, right, tol);
